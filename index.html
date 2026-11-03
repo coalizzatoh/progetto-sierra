@@ -128,15 +128,25 @@
     </section>
 
     
-<section class="panel feature-panel" id="accountPanel">
-  <div class="panel-heading"><div><p class="eyebrow">ACCOUNT</p><h2>Il tuo profilo Greenhouse</h2></div><span id="accountStatus" class="section-note">Non hai effettuato l'accesso</span></div>
-  <div class="auth-grid">
-    <div><h3>Credenziali automatiche</h3><p>Inserisci la tua email: il sistema genera un username e una password robusta. La password viene gestita da Supabase Auth e non salvata nelle tabelle del progetto.</p>
-      <label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="nome@email.com">
-      <div class="control-buttons"><button id="registerBtn" class="button button-primary">Crea account</button><button id="loginBtn" class="button button-secondary">Ho già un account</button></div>
-      <p id="authMessage" class="save-status" role="status"></p>
+<section class="panel feature-panel account-panel" id="accountPanel">
+  <div class="panel-heading"><div><p class="eyebrow">AREA PERSONALE</p><h2>Il tuo profilo Greenhouse</h2><p class="account-intro">Crea un'identità Greenhouse e conserva le tue simulazioni.</p></div><span id="accountStatus" class="section-note">Ospite</span></div>
+  <div class="account-layout">
+    <div class="account-card" id="authForm">
+      <div class="account-card-head"><span class="account-icon">GL</span><div><h3>Crea il tuo account</h3><p>Username breve e password generata automaticamente.</p></div></div>
+      <label for="authEmail">Indirizzo email</label>
+      <input id="authEmail" type="email" autocomplete="email" placeholder="nome@email.com">
+      <div class="account-actions"><button id="registerBtn" class="button button-primary">Crea account</button><button id="loginBtn" class="button button-secondary">Accedi</button></div>
+      <label for="loginPassword" class="login-label">Password (solo per accedere a un account esistente)</label>
+      <div class="password-input-row"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="La tua password"><button id="toggleLoginPassword" class="button button-secondary button-small" type="button">Mostra</button></div>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
     </div>
-    <div id="credentialsBox" class="credentials-box" hidden><h3>Salva le tue credenziali</h3><p>Copiale e conservale in un posto sicuro. Non condividerle.</p><label>Username</label><div class="copy-row"><code id="generatedUsername"></code><button class="button button-secondary button-small" data-copy="generatedUsername">Copia</button></div><label>Password</label><div class="copy-row"><code id="generatedPassword"></code><button class="button button-secondary button-small" data-copy="generatedPassword">Copia</button></div><p class="science-note">Se la conferma email è attiva, controlla la posta prima di accedere.</p></div>
+    <div id="credentialsBox" class="credentials-box" hidden>
+      <div class="credentials-heading"><span class="credentials-check">✓</span><div><h3>Account creato</h3><p>Salva subito queste credenziali: la password viene mostrata solo ora.</p></div></div>
+      <label>USERNAME</label><div class="copy-row"><code id="generatedUsername"></code><button class="button button-secondary button-small" data-copy="generatedUsername">Copia</button></div>
+      <label>PASSWORD</label><div class="copy-row"><code id="generatedPassword"></code><button class="button button-secondary button-small" data-copy="generatedPassword">Copia</button></div>
+      <p class="science-note">La password viene inviata a Supabase Auth, che la protegge con hashing sicuro. Non viene salvata nelle tabelle del sito. Non condividerla.</p>
+    </div>
+    <div id="signedInPanel" class="signed-in-card" hidden><span class="credentials-check">✓</span><div><h3>Sei dentro</h3><p>Profilo attivo: <strong id="signedInName"></strong></p></div><button id="logoutBtn" class="button button-secondary">Esci</button></div>
   </div>
 </section>
 
