@@ -17,7 +17,7 @@
       <span class="brand-mark">G</span>
       <span>GREENHOUSE<span class="brand-muted"> LAB</span></span>
     </a>
-    <span class="top-status"><span class="status-dot"></span> SIMULAZIONE DIDATTICA</span>
+    <div class="top-actions"><span class="top-status"><span class="status-dot"></span> SIMULAZIONE DIDATTICA</span><button id="authOpen" class="button button-secondary button-small">Accedi / Registrati</button><span id="userBadge" class="user-badge" hidden></span><button id="logoutBtn" class="button button-secondary button-small" hidden>Esci</button></div>
   </header>
 
   <main class="page">
@@ -127,7 +127,55 @@
       </aside>
     </section>
 
-    <section class="learning-section">
+    
+<section class="panel feature-panel" id="accountPanel">
+  <div class="panel-heading"><div><p class="eyebrow">ACCOUNT</p><h2>Il tuo profilo Greenhouse</h2></div><span id="accountStatus" class="section-note">Non hai effettuato l'accesso</span></div>
+  <div class="auth-grid">
+    <div><h3>Credenziali automatiche</h3><p>Inserisci la tua email: il sistema genera un username e una password robusta. La password viene gestita da Supabase Auth e non salvata nelle tabelle del progetto.</p>
+      <label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" placeholder="nome@email.com">
+      <div class="control-buttons"><button id="registerBtn" class="button button-primary">Crea account</button><button id="loginBtn" class="button button-secondary">Ho già un account</button></div>
+      <p id="authMessage" class="save-status" role="status"></p>
+    </div>
+    <div id="credentialsBox" class="credentials-box" hidden><h3>Salva le tue credenziali</h3><p>Copiale e conservale in un posto sicuro. Non condividerle.</p><label>Username</label><div class="copy-row"><code id="generatedUsername"></code><button class="button button-secondary button-small" data-copy="generatedUsername">Copia</button></div><label>Password</label><div class="copy-row"><code id="generatedPassword"></code><button class="button button-secondary button-small" data-copy="generatedPassword">Copia</button></div><p class="science-note">Se la conferma email è attiva, controlla la posta prima di accedere.</p></div>
+  </div>
+</section>
+
+<section class="panel feature-panel" id="advancedControls">
+  <div class="section-heading"><div><p class="eyebrow">SIMULAZIONE AVANZATA</p><h2>Gas, storia e scenari</h2></div><span class="section-note">1850–2026 · valori ricostruiti</span></div>
+  <div class="advanced-grid">
+    <div class="control-block"><label for="yearSlider">Anno storico: <strong id="yearLabel">2026</strong></label><input id="yearSlider" class="range" type="range" min="1850" max="2026" value="2026"><div class="range-labels"><span>1850</span><span>2026</span></div></div>
+    <div class="control-block"><label for="methaneSlider">Metano CH₄: <strong id="methaneLabel">1.940 ppb</strong></label><input id="methaneSlider" class="range" type="range" min="700" max="3000" step="10" value="1940"></div>
+    <div class="control-block"><label for="vaporSlider">Vapore acqueo: <strong id="vaporLabel">1,0×</strong></label><input id="vaporSlider" class="range" type="range" min="5" max="20" value="10"><p class="field-note">Fattore illustrativo della retroazione, non una concentrazione globale regolabile indipendentemente.</p></div>
+  </div>
+  <div class="scenario-grid"><button class="scenario-button active" data-scenario="baseline">Scenario attuale</button><button class="scenario-button" data-scenario="renewables">100% rinnovabili</button><button class="scenario-button" data-scenario="reforestation">Riforestazione estesa</button><button class="scenario-button" data-scenario="netzero2050">Emissioni nette zero 2050</button></div>
+  <p id="scenarioText" class="field-note">Scenario di riferimento: andamento storico ricostruito e proiezione didattica semplificata.</p>
+  <div class="advanced-metrics"><article><span class="micro-label">CO₂ STIMATA</span><strong id="advancedCo2">428 ppm</strong></article><article><span class="micro-label">CH₄</span><strong id="advancedMethane">1.940 ppb</strong></article><article><span class="micro-label">ANOMALIA TERMICA</span><strong id="advancedTemp">+1,4 °C</strong></article><article><span class="micro-label">FORZANTE RELATIVA</span><strong id="forcingValue">—</strong></article></div>
+  <div class="chart-wrap"><h3>Andamento storico ricostruito</h3><canvas id="historyChart" height="210" aria-label="Grafico storico di CO2 e temperatura"></canvas><p class="field-note">Serie annuali interpolate da punti di riferimento pubblicati; 2026 è una stima didattica, non un dato osservato definitivo. Non sostituisce dataset scientifici ufficiali.</p></div>
+</section>
+
+<section class="panel feature-panel">
+  <div class="section-heading"><div><p class="eyebrow">ESPERIMENTO VISIVO</p><h2>Radiazione e particelle</h2></div><span class="section-note">MODELLO CONCETTUALE</span></div>
+  <canvas id="radiationCanvas" class="radiation-canvas" width="900" height="360" aria-label="Raggi solari, Terra e radiazione infrarossa"></canvas>
+  <p class="field-note">I raggi gialli rappresentano la radiazione solare in entrata; quelli rossi l'infrarosso emesso dalla superficie e assorbito/riemesso dai gas serra. La grafica illustra il principio, non simula il trasferimento radiativo quantitativo.</p>
+</section>
+
+<section class="panel feature-panel">
+ <div class="section-heading"><div><p class="eyebrow">IL TUO PERCORSO</p><h2>Classifica e badge</h2></div></div>
+ <div class="dashboard-grid">
+  <div><h3>Classifica — simulazioni estreme</h3><ol id="extremeBoard" class="leaderboard"><li>Accedi per partecipare.</li></ol></div>
+  <div><h3>Classifica — simulazioni equilibrate</h3><ol id="balancedBoard" class="leaderboard"><li>Accedi per partecipare.</li></ol></div>
+ </div>
+ <div class="quiz-box"><h3>Quiz climatico · 3 domande</h3><div id="quizQuestions"></div><button id="quizSubmit" class="button button-primary">Verifica risposte</button><p id="quizResult" role="status" class="save-status"></p></div>
+</section>
+
+<section class="panel feature-panel">
+ <div class="section-heading"><div><p class="eyebrow">GLOSSARIO E FEEDBACK</p><h2>Impara e lascia un parere</h2></div></div>
+ <div class="glossary-grid"><details><summary>PPM</summary><p>Parti per milione: unità che indica quante molecole di una sostanza sono presenti ogni milione di molecole d'aria.</p></details><details><summary>Radiazione infrarossa</summary><p>Radiazione elettromagnetica emessa dalla superficie terrestre dopo aver assorbito energia; alcuni gas serra ne assorbono e riemettono parte.</p></details><details><summary>Anomalia termica</summary><p>Differenza tra una temperatura osservata e la media di un periodo di riferimento dichiarato.</p></details><details><summary>Forzante radiativa</summary><p>Variazione del bilancio energetico terrestre causata da un fattore, espressa in watt per metro quadrato.</p></details></div>
+ <div class="feedback-row"><label for="ratingSelect">Valuta il simulatore</label><select id="ratingSelect"><option value="5">5 — Ottimo</option><option value="4">4 — Molto buono</option><option value="3">3 — Buono</option><option value="2">2 — Da migliorare</option><option value="1">1 — Insufficiente</option></select><input id="feedbackMessage" maxlength="500" placeholder="Commento facoltativo"><button id="feedbackBtn" class="button button-secondary">Invia feedback</button></div>
+ <div class="control-buttons"><button id="reportBtn" class="button button-primary">Esporta mini-report (PDF)</button><button id="imageReportBtn" class="button button-secondary">Esporta riepilogo immagine</button></div>
+ <p id="feedbackStatus" class="save-status" role="status"></p>
+</section>
+\n<section class="learning-section">
       <div class="section-heading">
         <div>
           <p class="eyebrow">APPROFONDIMENTO</p>
