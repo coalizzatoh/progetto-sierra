@@ -1,148 +1,42 @@
-const LEVELS = [
-  { name: "NATURALE", heat: 20, co2: 280, temp: 0.0, description: "È presente l'effetto serra naturale, fondamentale per mantenere la Terra a una temperatura adatta alla vita." },
-  { name: "BASSO", heat: 30, co2: 350, temp: 0.5, description: "Nel modello aumenta la quantità di energia infrarossa trattenuta rispetto al livello naturale." },
-  { name: "MEDIO", heat: 40, co2: 420, temp: 1.2, description: "Una maggiore concentrazione di gas serra assorbe e riemette più radiazione infrarossa. Il modello rappresenta questo effetto in modo semplificato." },
-  { name: "ALTO", heat: 50, co2: 500, temp: 2.0, description: "L'aumento dei gas serra intensifica l'effetto serra e contribuisce al riscaldamento globale." },
-  { name: "MOLTO ALTO", heat: 60, co2: 600, temp: 3.0, description: "Il modello mostra una ritenzione ancora maggiore. Nella realtà la risposta del clima dipende da numerosi fattori e non segue una semplice scala lineare." }
+
+const LEVELS=[
+{name:"NATURALE",heat:20,co2:280,temp:0,description:"Effetto serra naturale, indispensabile alla vita."},
+{name:"BASSO",heat:30,co2:350,temp:.5,description:"Nel modello aumenta la quota di infrarosso assorbita e riemessa."},
+{name:"MEDIO",heat:40,co2:420,temp:1.2,description:"Più gas serra modificano il bilancio energetico. Modello semplificato."},
+{name:"ALTO",heat:50,co2:500,temp:2,description:"Un aumento dei gas serra contribuisce al riscaldamento globale."},
+{name:"MOLTO ALTO",heat:60,co2:600,temp:3,description:"Scenario illustrativo: la risposta climatica reale non è lineare."}
 ];
-
-const $ = (id) => document.getElementById(id);
-let currentLevel = 2;
-let supabaseClient = null;
-
-function setLevel(level) {
-  currentLevel = Math.max(0, Math.min(4, Number(level)));
-  const data = LEVELS[currentLevel];
-  $("gasSlider").value = currentLevel;
-  $("levelValue").textContent = currentLevel;
-  $("levelName").textContent = data.name;
-  $("heatValue").textContent = data.heat;
-  $("heatBar").style.width = `${data.heat}%`;
-  $("co2Value").textContent = data.co2;
-  $("tempValue").textContent = `+${data.temp.toFixed(1).replace(".", ",")}`;
-  $("energyValue").textContent = 100 - data.heat;
-  $("explanationText").textContent = data.description;
-  $("heatDescription").textContent = currentLevel === 0
-    ? "L'effetto serra naturale è indispensabile alla vita sulla Terra."
-    : "Indicatore didattico: aumentando i gas serra, cresce la quota di infrarosso trattenuta nel modello.";
-  $("decreaseBtn").disabled = currentLevel === 0;
-  $("increaseBtn").disabled = currentLevel === 4;
-  $("decreaseBtn").style.opacity = currentLevel === 0 ? ".45" : "1";
-  $("increaseBtn").style.opacity = currentLevel === 4 ? ".45" : "1";
-  renderGasParticles();
-}
-
-function renderGasParticles() {
-  const container = $("gasParticles");
-  container.innerHTML = "";
-  const count = 4 + currentLevel * 5;
-  const centerX = 53, centerY = 49, radius = 96;
-  for (let i = 0; i < count; i++) {
-    const angle = (Math.PI * 2 * i) / count;
-    const x = centerX + (Math.cos(angle) * radius / 390) * 100;
-    const y = centerY + (Math.sin(angle) * radius / 390) * 100;
-    const dot = document.createElement("span");
-    dot.className = "gas-dot";
-    dot.style.left = `${x}%`;
-    dot.style.top = `${y}%`;
-    dot.style.animationDelay = `${(i % 6) * -0.3}s`;
-    container.appendChild(dot);
-  }
-}
-
-function isConfigured() {
-  const cfg = window.APP_CONFIG || {};
-  return Boolean(window.supabase && cfg.supabaseUrl && cfg.supabaseKey &&
-    !cfg.supabaseUrl.includes("INSERISCI_") && !cfg.supabaseKey.includes("INSERISCI_"));
-}
-
-function initializeSupabase() {
-  if (!isConfigured()) {
-    $("saveStatus").textContent = "Per salvare i risultati, configura URL e publishable key in assets/config.js.";
-    $("dashboardStatus").textContent = "Modalità locale: il simulatore funziona, ma i dati non vengono salvati online.";
-    $("saveBtn").disabled = true;
-    $("saveBtn").style.opacity = ".55";
-    return false;
-  }
-  supabaseClient = window.supabase.createClient(window.APP_CONFIG.supabaseUrl, window.APP_CONFIG.supabaseKey);
-  $("saveBtn").disabled = false;
-  $("saveBtn").style.opacity = "1";
-  return true;
-}
-
-async function saveSimulation() {
-  if (!supabaseClient) return;
-  $("saveBtn").disabled = true;
-  $("saveStatus").textContent = "Salvataggio in corso...";
-  const row = { livello: currentLevel, calore_trattenuto: LEVELS[currentLevel].heat };
-  const { error } = await supabaseClient.from("simulazioni").insert(row);
-  $("saveBtn").disabled = false;
-  if (error) {
-    $("saveStatus").textContent = `Errore durante il salvataggio: ${error.message}`;
-    return;
-  }
-  $("saveStatus").textContent = "Simulazione salvata correttamente.";
-  await loadDashboard();
-}
-
-function renderChart(rows) {
-  const counts = [0, 0, 0, 0, 0];
-  rows.forEach(row => {
-    const level = Number(row.livello);
-    if (level >= 0 && level <= 4) counts[level]++;
-  });
-  const max = Math.max(1, ...counts);
-  $("levelChart").innerHTML = counts.map((count, level) => `
-    <div class="bar-row"><span>Livello ${level}</span>
-      <div class="bar-track"><div class="bar-fill" style="width:${(count / max) * 100}%"></div></div>
-      <span>${count}</span></div>`).join("");
-}
-
-function renderRecent(rows) {
-  const body = $("recentRows");
-  if (!rows.length) {
-    body.innerHTML = '<tr><td colspan="3" class="empty-state">Ancora nessuna simulazione salvata.</td></tr>';
-    return;
-  }
-  body.innerHTML = rows.slice(0, 8).map(row => {
-    const date = row.created_at ? new Date(row.created_at).toLocaleString("it-IT", {
-      day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit"
-    }) : "—";
-    return `<tr><td>Livello ${Number(row.livello)}</td><td>${Number(row.calore_trattenuto)}%</td><td>${date}</td></tr>`;
-  }).join("");
-}
-
-async function loadDashboard() {
-  if (!supabaseClient) return;
-  $("dashboardStatus").textContent = "Caricamento dati...";
-  const [countResult, rowsResult] = await Promise.all([
-    supabaseClient.from("simulazioni").select("*", { count: "exact", head: true }),
-    supabaseClient.from("simulazioni").select("livello, calore_trattenuto, created_at")
-      .order("created_at", { ascending: false }).limit(500)
-  ]);
-  if (countResult.error || rowsResult.error) {
-    $("dashboardStatus").textContent = `Impossibile caricare i dati: ${(countResult.error || rowsResult.error).message}`;
-    return;
-  }
-  const rows = rowsResult.data || [];
-  $("totalCount").textContent = countResult.count ?? rows.length;
-  if (rows.length) {
-    $("averageLevel").textContent = (rows.reduce((s, r) => s + Number(r.livello), 0) / rows.length).toFixed(1);
-    $("averageHeat").textContent = `${(rows.reduce((s, r) => s + Number(r.calore_trattenuto), 0) / rows.length).toFixed(1)}%`;
-  } else {
-    $("averageLevel").textContent = "—";
-    $("averageHeat").textContent = "—";
-  }
-  renderChart(rows);
-  renderRecent(rows);
-  $("dashboardStatus").textContent = `Dati aggiornati. Distribuzione basata sulle ${rows.length} simulazioni più recenti (massimo 500).`;
-}
-
-$("gasSlider").addEventListener("input", event => setLevel(event.target.value));
-$("decreaseBtn").addEventListener("click", () => setLevel(currentLevel - 1));
-$("increaseBtn").addEventListener("click", () => setLevel(currentLevel + 1));
-$("saveBtn").addEventListener("click", saveSimulation);
-$("refreshBtn").addEventListener("click", loadDashboard);
-
-setLevel(2);
-if (initializeSupabase()) loadDashboard();
+const HIST=[
+[1850,285,800,0],[1900,296,900,.1],[1950,311,1120,.1],[1960,317,1250,.2],[1970,326,1350,.3],[1980,339,1550,.4],[1990,354,1700,.6],[2000,369,1770,.8],[2010,390,1800,1],[2020,414,1870,1.2],[2024,423,1930,1.3],[2026,428,1940,1.4]
+];
+const $=id=>document.getElementById(id);
+let currentLevel=2,client=null,user=null,profile=null,scenario="baseline",year=2026,methane=1940,vapor=10;
+const cfg=window.APP_CONFIG||{};
+function interp(y,col){let a=HIST[0],b=HIST[HIST.length-1];for(let i=1;i<HIST.length;i++){if(y<=HIST[i][0]){a=HIST[i-1];b=HIST[i];break;}}const t=(y-a[0])/(b[0]-a[0]);return a[col]+(b[col]-a[col])*t;}
+function scenarioValues(y){let co2=interp(y,1),ch4=interp(y,2),temp=interp(y,3);if(y>2026){const dt=y-2026;const reductions={baseline:2.2,renewables:.35,reforestation:1.35,netzero2050:.9};co2+=dt*reductions[scenario];ch4+=dt*(scenario==="baseline"?8:scenario==="netzero2050"?1:4);temp+=dt*(scenario==="baseline"?.035:scenario==="renewables"?.012:scenario==="reforestation"?.022:.018);}else if(scenario!=="baseline"){const strength={renewables:.0,reforestation:.0,netzero2050:.0}[scenario];co2+=strength;}return{co2,ch4,temp};}
+function setLevel(n){currentLevel=Math.max(0,Math.min(4,Number(n)));const d=LEVELS[currentLevel];$("gasSlider").value=currentLevel;$("levelValue").textContent=currentLevel;$("levelName").textContent=d.name;$("heatValue").textContent=d.heat;$("heatBar").style.width=d.heat+"%";$("co2Value").textContent=d.co2;$("tempValue").textContent="+"+d.temp.toFixed(1).replace(".",",");$("energyValue").textContent=100-d.heat;$("explanationText").textContent=d.description;$("heatDescription").textContent=d.description;$("decreaseBtn").disabled=currentLevel===0;$("increaseBtn").disabled=currentLevel===4;renderGasParticles();drawRadiation();}
+function renderGasParticles(){const c=$("gasParticles");c.innerHTML="";for(let i=0;i<4+currentLevel*5;i++){const a=2*Math.PI*i/(4+currentLevel*5),e=document.createElement("span");e.className="gas-dot";e.style.left=(53+Math.cos(a)*24)+"%";e.style.top=(49+Math.sin(a)*24)+"%";c.appendChild(e);}}
+function isConfigured(){return Boolean(window.supabase&&cfg.supabaseUrl&&cfg.supabaseKey&&!cfg.supabaseKey.includes("INSERISCI_"));}
+function randomPassword(){const bytes=new Uint8Array(20);crypto.getRandomValues(bytes);return Array.from(bytes,b=>"ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz23456789!@$%*"[b%67]).join("")+"A7!";}
+function randomUsername(){const words=["EcoRider","TerraLab","GreenNova","ClimateFox","SolarWave","EcoPilot","BluePlanet","LeafRunner"];return words[Math.floor(Math.random()*words.length)]+Math.floor(100+Math.random()*9900);}
+function setAuthMessage(s){$("authMessage").textContent=s;}
+async function ensureProfile(u,preferred){if(!u)return null;let {data}=await client.from("profiles").select("*").eq("id",u.id).maybeSingle();if(data)return data;let name=preferred||u.user_metadata?.username||randomUsername();for(let i=0;i<4;i++){const r=await client.from("profiles").insert({id:u.id,username:name}).select().single();if(!r.error)return r.data;if(!String(r.error.message).includes("duplicate"))break;name=randomUsername();}return null;}
+async function refreshAuth(){const r=await client.auth.getUser();user=r.data.user||null;profile=user?await ensureProfile(user):null;$("userBadge").hidden=!user;$("logoutBtn").hidden=!user;$("authOpen").hidden=!!user;$("userBadge").textContent=profile?.username||user?.email||"";$("accountStatus").textContent=user?"Connesso come "+(profile?.username||"utente"):"Non hai effettuato l'accesso";if(user)loadBoards();}
+async function register(){const email=$("authEmail").value.trim();if(!email){setAuthMessage("Inserisci la tua email.");return;}const username=randomUsername(),password=randomPassword();$("registerBtn").disabled=true;setAuthMessage("Creazione account...");const {data,error}=await client.auth.signUp({email,password,options:{data:{username},emailRedirectTo:location.origin+location.pathname}});$("registerBtn").disabled=false;if(error){setAuthMessage(error.message);return;}$("credentialsBox").hidden=false;$("generatedUsername").textContent=username;$("generatedPassword").textContent=password;if(data.session){user=data.user;profile=await ensureProfile(user,username);await refreshAuth();setAuthMessage("Account creato e accesso effettuato.");}else{setAuthMessage("Account creato. Controlla la tua email per confermare l'indirizzo, poi accedi usando le credenziali generate.");}}
+async function login(){const email=$("authEmail").value.trim();if(!email){setAuthMessage("Inserisci la tua email.");return;}const password=prompt("Inserisci la password generata e salvata alla registrazione:");if(!password)return;const {error}=await client.auth.signInWithPassword({email,password});if(error){setAuthMessage(error.message);return;}await refreshAuth();setAuthMessage("Accesso effettuato.");}
+async function saveSimulation(){if(!user){$("saveStatus").textContent="Accedi per salvare le tue simulazioni.";return;}const v=scenarioValues(year),heat=Math.min(95,Math.max(5,20+(v.co2-280)*.105+(v.ch4-800)*.012+(v.temp*2)));const row={user_id:user.id,username:profile?.username||"Eco",year,co2_ppm:+v.co2.toFixed(2),methane_ppb:+methane.toFixed(2),water_vapor_pct:+(vapor/10).toFixed(2),scenario,retained_heat:+heat.toFixed(2)};const {error}=await client.from("simulation_runs").insert(row);if(error){$("saveStatus").textContent="Errore: "+error.message;return;}$("saveStatus").textContent="Simulazione salvata nel tuo profilo.";await loadBoards();await loadPersonalHistory();}
+async function loadBoards(){if(!client)return;for(const [cat,id] of [["extreme","extremeBoard"],["balanced","balancedBoard"]]){const {data,error}=await client.from("leaderboard_entries").select("username,score,created_at").eq("category",cat).order("score",{ascending:cat==="balanced"}).limit(10);$(id).innerHTML=error?"<li>Classifica non disponibile.</li>":(data||[]).map(x=>"<li>"+escapeHtml(x.username)+" — "+Number(x.score).toFixed(1)+"</li>").join("")||"<li>Nessun risultato.</li>";}}
+function escapeHtml(s){return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+async function loadPersonalHistory(){if(!user)return;const {data}=await client.from("simulation_runs").select("year,co2_ppm,retained_heat,created_at").eq("user_id",user.id).order("created_at",{ascending:false}).limit(40);if(data?.length)drawHistory(data.slice().reverse());}
+function drawHistory(rows){const c=$("historyChart"),ctx=c.getContext("2d"),w=c.width=c.clientWidth*devicePixelRatio,h=c.height=210*devicePixelRatio;ctx.scale(devicePixelRatio,devicePixelRatio);const cw=c.clientWidth,ch=210;ctx.clearRect(0,0,cw,ch);ctx.strokeStyle="#31445d";ctx.lineWidth=1;for(let i=0;i<4;i++){let y=20+i*48;ctx.beginPath();ctx.moveTo(38,y);ctx.lineTo(cw-12,y);ctx.stroke();}const vals=rows.length?rows:HIST;const points=vals.map(x=>({x:x.year,y:x.co2_ppm??x[1]}));const min=Math.min(...points.map(p=>p.y)),max=Math.max(...points.map(p=>p.y));ctx.strokeStyle="#60a5fa";ctx.lineWidth=2;ctx.beginPath();points.forEach((p,i)=>{const x=40+i/(Math.max(1,points.length-1))*(cw-58),y=175-(p.y-min)/(Math.max(1,max-min))*135;i?ctx.lineTo(x,y):ctx.moveTo(x,y);});ctx.stroke();ctx.fillStyle="#91a0b5";ctx.font="10px sans-serif";ctx.fillText("CO₂ ppm",8,12);ctx.fillText(String(min.toFixed(0)),5,178);ctx.fillText(String(max.toFixed(0)),5,45);}
+function updateAdvanced(){const v=scenarioValues(year);$("yearLabel").textContent=year;$("methaneLabel").textContent=Math.round(methane).toLocaleString("it-IT")+" ppb";$("vaporLabel").textContent=(vapor/10).toFixed(1).replace(".",",")+"×";$("advancedCo2").textContent=v.co2.toFixed(1)+" ppm";$("advancedMethane").textContent=methane.toLocaleString("it-IT")+" ppb";$("advancedTemp").textContent="+"+v.temp.toFixed(2)+" °C";$("forcingValue").textContent=(5.35*Math.log(v.co2/280)).toFixed(2)+" W/m²";const texts={baseline:"Scenario di riferimento con prosecuzione dell'andamento emissivo.",renewables:"Transizione rapida alle rinnovabili: la crescita futura della CO₂ viene fortemente rallentata nel modello.",reforestation:"Riforestazione estesa: maggiore assorbimento di CO₂, con effetto graduale e limitato rispetto alle emissioni.",netzero2050:"Emissioni nette zero entro il 2050: la crescita della CO₂ rallenta progressivamente, senza azzerare subito il riscaldamento."};$("scenarioText").textContent=texts[scenario];drawHistory(HIST.filter(x=>x[0]<=2026));drawRadiation();updateEarth();}
+function updateEarth(){const e=document.querySelector(".earth");if(!e)return;const t=Math.max(0,Math.min(1,(scenarioValues(year).temp+0.2)/2));e.style.filter="hue-rotate("+(-25+t*28)+"deg) saturate("+(0.8+t*.6)+")";}
+function drawRadiation(){const c=$("radiationCanvas");if(!c)return;const x=c.getContext("2d"),w=c.width,h=c.height;x.clearRect(0,0,w,h);x.fillStyle="#0b1422";x.fillRect(0,0,w,h);x.fillStyle="#ffd166";x.beginPath();x.arc(105,170,34,0,Math.PI*2);x.fill();x.shadowColor="#ffd166";x.shadowBlur=28;x.fill();x.shadowBlur=0;x.strokeStyle="#fbbf24";x.lineWidth=4;for(let i=0;i<5;i++){x.beginPath();x.moveTo(145,120+i*22);x.lineTo(365,135+i*22);x.stroke();}x.fillStyle="#38bdf8";x.beginPath();x.arc(555,190,88,0,Math.PI*2);x.fill();x.fillStyle="#22a06b";x.beginPath();x.ellipse(530,160,40,20,-.3,0,Math.PI*2);x.fill();x.beginPath();x.ellipse(580,220,28,35,.4,0,Math.PI*2);x.fill();x.strokeStyle="#60a5fa";x.lineWidth=3;x.beginPath();x.ellipse(555,190,145,125,0,0,Math.PI*2);x.stroke();const n=3+Math.round((methane-800)/400);for(let i=0;i<n;i++){const a=i*2.4;x.fillStyle="#a78bfa";x.beginPath();x.arc(555+Math.cos(a)*125,190+Math.sin(a)*105,5,0,Math.PI*2);x.fill();}x.strokeStyle="#fb7185";x.lineWidth=4;for(let i=0;i<3;i++){x.beginPath();x.moveTo(555+i*24,100);x.quadraticCurveTo(680,70+i*30,650,30+i*15);x.stroke();}x.fillStyle="#f8fafc";x.font="14px sans-serif";x.fillText("Sole",80,235);x.fillText("Terra",525,305);x.fillText("Gas serra",690,185);x.fillStyle="#fbbf24";x.fillText("Radiazione solare",175,95);x.fillStyle="#fb7185";x.fillText("Infrarosso",670,45);}
+const quiz=[{q:"Cosa significa ppm?",a:["Parti per milione","Pressione per metro","Potenza per mole"],correct:0},{q:"Quale radiazione viene emessa dalla superficie terrestre?",a:["Ultravioletta","Infrarossa","Raggi X"],correct:1},{q:"Il vapore acqueo è soprattutto…",a:["Un feedback climatico","Un combustibile fossile","Un gas inerte"],correct:0}];
+function renderQuiz(){$("quizQuestions").innerHTML=quiz.map((q,i)=>'<div class="quiz-question"><strong>'+(i+1)+'. '+q.q+'</strong>'+q.a.map((a,j)=>'<label><input type="radio" name="q'+i+'" value="'+j+'"> '+a+'</label>').join("")+'</div>').join("");}
+async function submitQuiz(){let score=0;quiz.forEach((q,i)=>{if(document.querySelector('input[name="q'+i+'"]:checked')?.value==q.correct)score++;});$("quizResult").textContent="Risposte corrette: "+score+"/3"+(score===3?" — Badge Climate Explorer sbloccato!":" — Riprova per ottenere il badge.");if(score===3&&user){const {error}=await client.from("quiz_awards").upsert({user_id:user.id,badge:"climate-explorer",score},{onConflict:"user_id,badge"});if(error)$("quizResult").textContent+=" (Accesso al salvataggio badge non riuscito.)";}}
+async function sendFeedback(){const rating=Number($("ratingSelect").value),message=$("feedbackMessage").value.trim()||null;const {error}=await client.from("feedback").insert({user_id:user?.id||null,rating,message});$("feedbackStatus").textContent=error?"Invio non riuscito: "+error.message:"Grazie per il feedback!";}
+function exportImage(){const c=document.createElement("canvas");c.width=1200;c.height=700;const x=c.getContext("2d");x.fillStyle="#080d18";x.fillRect(0,0,c.width,c.height);x.fillStyle="#eef4ff";x.font="bold 42px Arial";x.fillText("GREENHOUSE LAB",70,90);x.font="24px Arial";const v=scenarioValues(year);["Anno: "+year,"CO₂: "+v.co2.toFixed(1)+" ppm","CH₄: "+methane+" ppb","Temperatura: +"+v.temp.toFixed(2)+" °C","Scenario: "+scenario,"Profilo: "+(profile?.username||"ospite")].forEach((t,i)=>x.fillText(t,70,180+i*65));const a=document.createElement("a");a.download="greenhouse-lab-report.png";a.href=c.toDataURL("image/png");a.click();}
+function bind(){ $("gasSlider").addEventListener("input",e=>setLevel(e.target.value));$("decreaseBtn").addEventListener("click",()=>setLevel(currentLevel-1));$("increaseBtn").addEventListener("click",()=>setLevel(currentLevel+1));$("saveBtn").addEventListener("click",saveSimulation);$("yearSlider").addEventListener("input",e=>{year=+e.target.value;updateAdvanced();});$("methaneSlider").addEventListener("input",e=>{methane=+e.target.value;updateAdvanced();});$("vaporSlider").addEventListener("input",e=>{vapor=+e.target.value;updateAdvanced();});document.querySelectorAll("[data-scenario]").forEach(b=>b.addEventListener("click",()=>{scenario=b.dataset.scenario;document.querySelectorAll("[data-scenario]").forEach(x=>x.classList.toggle("active",x===b));updateAdvanced();}));$("authOpen").addEventListener("click",()=>$("accountPanel").scrollIntoView({behavior:"smooth"}));$("registerBtn").addEventListener("click",register);$("loginBtn").addEventListener("click",login);$("logoutBtn").addEventListener("click",async()=>{await client.auth.signOut();await refreshAuth();});document.querySelectorAll("[data-copy]").forEach(b=>b.addEventListener("click",()=>navigator.clipboard.writeText($(b.dataset.copy).textContent)));$("quizSubmit").addEventListener("click",submitQuiz);$("feedbackBtn").addEventListener("click",sendFeedback);$("reportBtn").addEventListener("click",()=>window.print());$("imageReportBtn").addEventListener("click",exportImage);window.addEventListener("resize",()=>{updateAdvanced();});}
+setLevel(2);renderQuiz();updateAdvanced();bind();
+if(isConfigured()){client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey);refreshAuth().then(()=>{if(user)loadPersonalHistory();});client.auth.onAuthStateChange(()=>setTimeout(refreshAuth,0));}else{setAuthMessage("Configura le credenziali Supabase per attivare account e salvataggi.");}
