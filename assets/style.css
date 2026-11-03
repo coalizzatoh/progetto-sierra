@@ -221,3 +221,6 @@ footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1
 .leaderboard strong{color:#93c5fd;font:11px 'DM Mono',monospace}
 @media(max-width:760px){.account-layout{grid-template-columns:1fr}.account-card,.credentials-box{padding:17px}}
 @media(max-width:520px){.auth-grid,.account-layout{grid-template-columns:1fr}.account-actions{flex-direction:column}.password-input-row{align-items:stretch}.chart-legend{gap:10px}}
+
+/* Admin access link in the signed-in profile */
+.admin-panel-link{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;white-space:nowrap}.signed-in-card{flex-wrap:wrap}.signed-in-card>div{flex:1;min-width:180px}
