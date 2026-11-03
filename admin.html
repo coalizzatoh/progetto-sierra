@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d18">
+  <meta name="robots" content="noindex,nofollow">
+  <title>Admin Console — Greenhouse Lab</title>
+  <link rel="stylesheet" href="assets/admin.css?v=1">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/admin.js?v=1" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="./">GREENHOUSE <span>LAB</span></a>
+    <div class="top-actions">
+      <span class="live"><i></i> LIVE · 5 SEC</span>
+      <button id="refresh" class="ghost">Aggiorna ora</button>
+      <button id="logout" class="ghost">Esci</button>
+    </div>
+  </header>
+  <main class="wrap">
+    <section class="intro">
+      <div><p class="eyebrow">CONTROL ROOM / RESTRICTED</p><h1>Admin Console</h1><p class="muted">Benvenuto, <strong id="admin-name">Admin</strong>. Monitoraggio Greenhouse Lab.</p></div>
+      <div class="sync"><span class="pulse"></span><div><strong id="sync-state">Connessione in corso</strong><small id="last-update">In attesa dei dati…</small></div></div>
+    </section>
+    <div id="error" class="error" hidden></div>
+    <section class="stats" aria-label="Statistiche">
+      <article class="stat"><span>UTENTI</span><strong id="stat-users">—</strong><small>Profili registrati</small></article>
+      <article class="stat"><span>SIMULAZIONI</span><strong id="stat-runs">—</strong><small>Esperimenti salvati</small></article>
+      <article class="stat"><span>FEEDBACK</span><strong id="stat-feedback">—</strong><small>Messaggi ricevuti</small></article>
+      <article class="stat"><span>QUIZ AWARDS</span><strong id="stat-awards">—</strong><small>Badge assegnati</small></article>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><p class="eyebrow">DATABASE / PROFILES</p><h2>Utenti registrati</h2></div><span class="count" id="users-count">0</span></div>
+      <div class="table-wrap"><table><thead><tr><th>USERNAME</th><th>REGISTRATO IL</th><th>ID</th></tr></thead><tbody id="users-table"><tr><td colspan="3" class="empty">Caricamento…</td></tr></tbody></table></div>
+    </section>
+    <section class="panel">
+      <div class="panel-head"><div><p class="eyebrow">ACTIVITY / SIMULATIONS</p><h2>Ultime simulazioni</h2></div><span class="count" id="runs-count">0</span></div>
+      <div class="table-wrap"><table><thead><tr><th>UTENTE</th><th>ANNO</th><th>CO₂</th><th>CH₄</th><th>SCENARIO</th><th>DATA</th></tr></thead><tbody id="runs-table"><tr><td colspan="6" class="empty">Caricamento…</td></tr></tbody></table></div>
+    </section>
+    <section class="grid-two">
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">INBOX / FEEDBACK</p><h2>Feedback recenti</h2></div><span class="count" id="feedback-count">0</span></div>
+        <div id="feedback-list" class="feed-list"><p class="empty">Caricamento…</p></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><p class="eyebrow">RANKING / LEADERBOARD</p><h2>Attività classifica</h2></div><span class="count" id="board-count">0</span></div>
+        <div class="table-wrap"><table><thead><tr><th>UTENTE</th><th>CATEGORIA</th><th>PUNTEGGIO</th></tr></thead><tbody id="board-table"><tr><td colspan="3" class="empty">Caricamento…</td></tr></tbody></table></div>
+      </article>
+    </section>
+    <footer>GREENHOUSE LAB · ADMIN MONITOR <span>Auto-refresh ogni 5 secondi</span></footer>
+  </main>
+</body>
+</html>
