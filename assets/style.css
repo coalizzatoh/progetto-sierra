@@ -197,3 +197,27 @@ footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1
 .leaderboard strong{color:#93c5fd;font:11px 'DM Mono',monospace}
 @media(max-width:760px){.account-layout{grid-template-columns:1fr}.account-card,.credentials-box{padding:17px}.signed-in-card{grid-column:auto;flex-wrap:wrap}}
 @media(max-width:520px){.auth-grid,.account-layout{grid-template-columns:1fr}.account-actions{flex-direction:column}.password-input-row{align-items:stretch}.password-input-row .button{flex:none}.chart-legend{gap:10px}}
+
+/* Username account and dashboard */
+.auth-form input{display:block;width:100%;min-height:46px;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:#080f1b;color:var(--text);font:14px Manrope,Arial,sans-serif}
+.auth-info p{color:#cbd5e1;font-size:12px;line-height:1.65}
+.auth-message{min-height:20px;margin:13px 0 0;color:#9fb0c5;font-size:12px;line-height:1.5}
+.auth-message[data-state=error]{color:#fca5a5}
+.chart-legend{display:flex;flex-wrap:wrap;gap:16px;margin:10px 0;color:var(--muted);font-size:11px}
+.chart-legend span{display:flex;align-items:center;gap:7px}
+.chart-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.legend-co2{background:#60a5fa}.legend-temp{background:#fb923c}
+.bar-chart{display:grid;gap:11px;padding:14px 0}
+.bar-row{display:grid;grid-template-columns:75px 1fr 24px;align-items:center;gap:10px;color:#cbd5e1;font-size:11px}
+.bar-track{height:9px;background:#1c2a3e;border-radius:99px;overflow:hidden}
+.bar-track i{display:block;height:100%;border-radius:99px;background:#38bdf8}
+.bar-row strong{text-align:right;font:11px 'DM Mono',monospace}
+.quiz-question{min-width:0;border:1px solid var(--line)}
+.quiz-question legend{padding:0 5px;color:#eef4ff;font-size:13px;font-weight:700}
+.quiz-question label{display:flex;align-items:center;gap:8px}
+.quiz-question input{accent-color:#60a5fa}
+.table-wrap{overflow-x:auto}
+.leaderboard li{display:flex;justify-content:space-between;gap:10px}
+.leaderboard strong{color:#93c5fd;font:11px 'DM Mono',monospace}
+@media(max-width:760px){.account-layout{grid-template-columns:1fr}.account-card,.credentials-box{padding:17px}}
+@media(max-width:520px){.auth-grid,.account-layout{grid-template-columns:1fr}.account-actions{flex-direction:column}.password-input-row{align-items:stretch}.chart-legend{gap:10px}}
