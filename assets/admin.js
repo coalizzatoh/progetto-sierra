@@ -1,45 +1,32 @@
 "use strict";
-(() => {
- const cfg=window.APP_CONFIG||{};
- const $=id=>document.getElementById(id);
- const escapeHTML=value=>String(value??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
- const date=value=>value?new Date(value).toLocaleString("it-IT",{dateStyle:"short",timeStyle:"short"}):"—";
- let client=null, busy=false, timer=null;
- function showError(message){$("error").hidden=!message;$("error").textContent=message||"";}
- function rows(id,html,empty,span){$(id).innerHTML=html||'<tr><td colspan="'+span+'" class="empty">'+empty+'</td></tr>';}
- function render(data){
-  $("stat-users").textContent=data.stats.users;$("stat-runs").textContent=data.stats.simulations;$("stat-feedback").textContent=data.stats.feedback;$("stat-awards").textContent=data.stats.quiz_awards;
-  $("users-count").textContent=data.users.length;$("runs-count").textContent=data.simulations.length;$("feedback-count").textContent=data.feedback.length;$("board-count").textContent=data.leaderboard.length;
-  rows("users-table",data.users.map(u=>'<tr><td><strong>'+escapeHTML(u.username)+'</strong></td><td>'+date(u.created_at)+'</td><td class="id">'+escapeHTML(u.id)+'</td></tr>').join(""),"Nessun utente",3);
-  rows("runs-table",data.simulations.map(r=>'<tr><td>'+escapeHTML(r.username)+'</td><td>'+escapeHTML(r.year)+'</td><td>'+escapeHTML(r.co2_ppm)+'</td><td>'+escapeHTML(r.methane_ppb)+'</td><td>'+escapeHTML(r.scenario)+'</td><td>'+date(r.created_at)+'</td></tr>').join(""),"Nessuna simulazione",6);
-  $("feedback-list").innerHTML=data.feedback.length?data.feedback.map(f=>'<article class="feed"><div class="feed-top"><strong>'+escapeHTML(f.username)+'</strong><span class="stars">'+("★".repeat(Math.max(0,Math.min(5,Number(f.rating)||0))))+("☆".repeat(5-Math.max(0,Math.min(5,Number(f.rating)||0))))+'</span></div><p>'+escapeHTML(f.message||"Nessun commento")+'</p><time>'+date(f.created_at)+'</time></article>').join(""):'<p class="empty">Nessun feedback ricevuto</p>';
-  rows("board-table",data.leaderboard.map(b=>'<tr><td>'+escapeHTML(b.username)+'</td><td>'+escapeHTML(b.category)+'</td><td>'+escapeHTML(b.score)+'</td></tr>').join(""),"Nessun dato classifica",3);
-  $("sync-state").textContent="Dati sincronizzati";$("last-update").textContent="Ultimo aggiornamento: "+date(data.generated_at);
+(()=>{
+ const cfg=window.APP_CONFIG||{};const $=id=>document.getElementById(id);
+ const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+ const date=v=>v?new Date(v).toLocaleString("it-IT",{dateStyle:"short",timeStyle:"short"}):"—";
+ let client=null,busy=false,timer=null;
+ function error(m){$("error").hidden=!m;$("error").textContent=m||"";}
+ function notice(m){$("notice").hidden=!m;$("notice").textContent=m||"";if(m)setTimeout(()=>notice(""),4500);}
+ function table(id,html,empty,span){$(id).innerHTML=html||'<tr><td colspan="'+span+'" class="empty">'+empty+"</td></tr>";}
+ async function action(body){
+  const {data,error:e}=await client.functions.invoke("admin-manage-user",{body});
+  if(e){let msg=e.message;try{const x=await e.context.clone().json();msg=x.error||msg;}catch{}throw new Error(msg);}
+  if(!data?.ok)throw new Error(data?.error||"Operazione non riuscita.");
+  notice(data.message||"Operazione completata.");await refresh();
  }
- async function refresh(){
-  if(busy||!client)return;busy=true;$("sync-state").textContent="Aggiornamento…";
-  try{
-   const {data:{session}}=await client.auth.getSession();
-   if(!session){showError("Sessione assente. Accedi dal sito Greenhouse Lab e poi apri /admin.html.");$("sync-state").textContent="Non autenticato";return;}
-   const {data,error}=await client.functions.invoke("admin-dashboard-data",{body:{}});
-   if(error){let message=error.message;try{const body=await error.context.clone().json();message=body.error||message;}catch{}throw new Error(message);}
-   if(!data?.ok)throw new Error(data?.error||"Risposta non valida");
-   $("admin-name").textContent=session.user.user_metadata?.username||"Admin";
-   render(data);showError("");
-  }catch(error){showError(error.message||"Errore di connessione");$("sync-state").textContent="Aggiornamento fallito";}
-  finally{busy=false;}
+ function render(d){
+  $("stat-users").textContent=d.stats.users;$("stat-runs").textContent=d.stats.simulations;$("stat-feedback").textContent=d.stats.feedback;$("stat-awards").textContent=d.stats.quiz_awards;
+  $("users-count").textContent=d.users.length;$("runs-count").textContent=d.simulations.length;$("feedback-count").textContent=d.feedback.length;$("board-count").textContent=d.leaderboard.length;
+  table("users-table",d.users.map(u=>{const banned=u.banned_until&&Date.parse(u.banned_until)>Date.now();return '<tr><td><strong>'+esc(u.username)+'</strong></td><td><span class="status '+(banned?"banned":"active")+'">'+(banned?"BANNATO":"ATTIVO")+'</span></td><td>'+date(u.created_at)+'</td><td class="id">'+esc(u.id)+'</td><td><div class="actions"><button data-action="rename_user" data-id="'+esc(u.id)+'" data-name="'+esc(u.username)+'">Rinomina</button><button data-action="reset_password" data-id="'+esc(u.id)+'">Password</button><button class="'+(banned?"":"danger")+'" data-action="'+(banned?"unban_user":"ban_user")+'" data-id="'+esc(u.id)+'">'+(banned?"Sblocca":"Banna")+'</button></div></td></tr>';}).join(""),"Nessun utente",5);
+  table("ip-table",(d.ip_bans||[]).map(x=>'<tr><td class="id">'+esc(x.ip_address)+'</td><td>'+esc(x.reason||"—")+'</td><td>'+date(x.created_at)+'</td><td><button data-action="unban_ip" data-ip="'+esc(x.ip_address)+'">Rimuovi blocco</button></td></tr>').join(""),"Nessun IP bloccato",4);$("ip-count").textContent=(d.ip_bans||[]).length;
+  table("runs-table",d.simulations.map(r=>'<tr><td>'+esc(r.username)+'</td><td>'+esc(r.year)+'</td><td>'+esc(r.co2_ppm)+'</td><td>'+esc(r.methane_ppb)+'</td><td>'+esc(r.scenario)+'</td><td>'+date(r.created_at)+'</td></tr>').join(""),"Nessuna simulazione",6);
+  $("feedback-list").innerHTML=d.feedback.length?d.feedback.map(f=>'<article class="feed"><div class="feed-top"><strong>'+esc(f.username)+'</strong><span class="stars">'+("★".repeat(Math.max(0,Math.min(5,Number(f.rating)||0))))+("☆".repeat(5-Math.max(0,Math.min(5,Number(f.rating)||0))))+'</span></div><p>'+esc(f.message||"Nessun commento")+'</p><time>'+date(f.created_at)+'</time></article>').join(""):'<p class="empty">Nessun feedback ricevuto</p>';
+  table("board-table",d.leaderboard.map(b=>'<tr><td>'+esc(b.username)+'</td><td>'+esc(b.category)+'</td><td>'+esc(b.score)+'</td></tr>').join(""),"Nessun dato classifica",3);
+  $("sync-state").textContent="Dati sincronizzati";$("last-update").textContent="Ultimo aggiornamento: "+date(d.generated_at);
  }
- async function init(){
-  if(!cfg.supabaseUrl||!cfg.supabaseKey){showError("Configurazione Supabase non trovata.");return;}
-  client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey);
-  const {data:{session}}=await client.auth.getSession();
-  if(!session){showError("Accedi prima dal sito Greenhouse Lab, poi torna qui.");$("sync-state").textContent="Non autenticato";return;}
-  const role=session.user.app_metadata?.role;
-  if(role!=="admin"){showError("Questo account non ha il ruolo amministratore. Esci e accedi di nuovo dopo l'assegnazione del ruolo.");$("sync-state").textContent="Accesso negato";return;}
-  $("admin-name").textContent=session.user.user_metadata?.username||"Admin";
-  await refresh();timer=window.setInterval(refresh,5000);
- }
- $("refresh").addEventListener("click",refresh);
- $("logout").addEventListener("click",async()=>{if(client)await client.auth.signOut();if(timer)clearInterval(timer);location.href="./";});
- init();
+ async function refresh(){if(busy||!client)return;busy=true;$("sync-state").textContent="Aggiornamento…";try{const {data:{session}}=await client.auth.getSession();if(!session){error("Sessione assente. Accedi dal sito Greenhouse Lab.");$("sync-state").textContent="Non autenticato";return;}const {data,e}=await client.functions.invoke("admin-dashboard-data",{body:{}});if(e){let m=e.message;try{m=(await e.context.clone().json()).error||m;}catch{}throw new Error(m);}if(!data?.ok)throw new Error(data?.error||"Risposta non valida");$("admin-name").textContent=session.user.user_metadata?.username||"Admin";render(data);error("");}catch(e){error(e.message||"Errore di connessione");$("sync-state").textContent="Aggiornamento fallito";}finally{busy=false;}}
+ async function init(){if(!cfg.supabaseUrl||!cfg.supabaseKey){error("Configurazione Supabase non trovata.");return;}client=window.supabase.createClient(cfg.supabaseUrl,cfg.supabaseKey);const {data:{session}}=await client.auth.getSession();if(!session){error("Accedi prima dal sito Greenhouse Lab.");$("sync-state").textContent="Non autenticato";return;}if(session.user.app_metadata?.role!=="admin"){error("Account senza ruolo amministratore. Esci e accedi di nuovo.");$("sync-state").textContent="Accesso negato";return;}$("admin-name").textContent=session.user.user_metadata?.username||"Admin";await refresh();timer=setInterval(refresh,5000);}
+ $("users-table").addEventListener("click",async ev=>{const b=ev.target.closest("button[data-action]");if(!b)return;const a=b.dataset.action,id=b.dataset.id,name=b.dataset.name;try{if(a==="rename_user"){const value=prompt("Nuovo username per "+name+":",name);if(value===null)return;await action({action:a,user_id:id,username:value});}else if(a==="reset_password"){const value=prompt("Nuova password (minimo 10 caratteri):");if(value===null)return;await action({action:a,user_id:id,password:value});}else if(a==="ban_user"||a==="unban_user"){if(!confirm(a==="ban_user"?"Bannare questo account?":"Rimuovere il ban da questo account?"))return;await action({action:a,user_id:id});}}catch(e){error(e.message);}});
+ $("ip-table").addEventListener("click",async ev=>{const b=ev.target.closest("button[data-action]");if(!b)return;if(!confirm("Rimuovere il blocco IP "+b.dataset.ip+"?"))return;try{await action({action:"unban_ip",ip_address:b.dataset.ip});}catch(e){error(e.message);}});
+ $("ip-form").addEventListener("submit",async ev=>{ev.preventDefault();try{await action({action:"ban_ip",ip_address:$("ip-address").value,reason:$("ip-reason").value});$("ip-form").reset();}catch(e){error(e.message);}});
+ $("refresh").addEventListener("click",refresh);$("logout").addEventListener("click",async()=>{if(client)await client.auth.signOut();if(timer)clearInterval(timer);location.href="./";});init();
 })();
