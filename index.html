@@ -1,167 +1,25 @@
 <!doctype html>
 <html lang="it">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#080d18">
-  <meta name="description" content="Simulatore didattico interattivo dell'effetto serra.">
-  <title>Greenhouse Lab — Simulatore effetto serra</title>
-  <link rel="stylesheet" href="assets/style.css?v=20261103-account2">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="assets/config.js"></script>
-  <script src="assets/app.js?v=20261103-account2" defer></script>
-</head>
-<body>
-  <header class="topbar">
-    <a class="brand" href="#" aria-label="Greenhouse Lab home">
-      <span class="brand-mark">G</span>
-      <span>GREENHOUSE<span class="brand-muted"> LAB</span></span>
-    </a>
-    <div class="top-actions"><span class="top-status"><span class="status-dot"></span> SIMULAZIONE DIDATTICA</span><button id="authOpen" class="button button-secondary button-small">Accedi / Registrati</button><span id="userBadge" class="user-badge" hidden></span><button id="logoutBtn" class="button button-secondary button-small" hidden>Esci</button></div>
-  </header>
-
-  <main class="page">
-    <section class="hero">
-      <div>
-        <p class="eyebrow">SCIENZA · CLIMA · INTERATTIVITÀ</p>
-        <h1>Capire l'<span>effetto serra.</span></h1>
-        <p class="hero-copy">Modifica la quantità di gas serra e osserva come cambia, in questo modello semplificato, la quota di energia trattenuta nell'atmosfera.</p>
-      </div>
-      <div class="hero-chip">MODELLO CONCETTUALE <span>01 / 03</span></div>
-    </section>
-
-    <section class="main-grid">
-      <article class="panel simulation-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">01 — OSSERVA</p>
-            <h2>Il sistema Terra-atmosfera</h2>
-          </div>
-          <span class="live-label"><span class="pulse"></span> LIVE</span>
-        </div>
-
-        <div class="scene" aria-label="Illustrazione animata del Sole, della Terra e dell'atmosfera">
-          <div class="stars"></div>
-          <div class="sun-rays"></div>
-          <div class="sun"></div>
-          <div class="sun-caption">RADIAZIONE SOLARE</div>
-          <div class="sunbeam beam-one"></div>
-          <div class="sunbeam beam-two"></div>
-          <div class="atmosphere"></div>
-          <div class="earth">
-            <span class="land land-one"></span>
-            <span class="land land-two"></span>
-            <span class="land land-three"></span>
-          </div>
-          <div class="earth-caption">TERRA</div>
-          <div id="gasParticles" class="gas-particles"></div>
-          <div class="infrared infrared-one"></div>
-          <div class="infrared infrared-two"></div>
-          <div class="infrared infrared-three"></div>
-          <div class="scene-legend">
-            <span><i class="legend-sun"></i> Energia in entrata</span>
-            <span><i class="legend-ir"></i> Infrarosso</span>
-            <span><i class="legend-gas"></i> Gas serra</span>
-          </div>
-        </div>
-
-        <div class="explanation">
-          <div class="explanation-icon">i</div>
-          <p id="explanationText">La luce solare attraversa l'atmosfera. La superficie terrestre assorbe energia e ne restituisce una parte sotto forma di radiazione infrarossa.</p>
-        </div>
-
-        <div class="climate-metrics">
-          <article class="climate-metric">
-            <span class="micro-label">CO₂ NEL MODELLO</span>
-            <div class="climate-number"><span id="co2Value">420</span><small>ppm</small></div>
-            <p>Parti per milione nell'atmosfera</p>
-          </article>
-          <article class="climate-metric">
-            <span class="micro-label">VARIAZIONE TERMICA</span>
-            <div class="climate-number"><span id="tempValue">+1,2</span><small>°C</small></div>
-            <p>Valore illustrativo rispetto al riferimento</p>
-          </article>
-          <article class="climate-metric">
-            <span class="micro-label">ENERGIA IN USCITA</span>
-            <div class="climate-number"><span id="energyValue">60</span><small>%</small></div>
-            <p>Quota che nel modello non viene trattenuta</p>
-          </article>
-        </div>
-      </article>
-
-      <aside class="panel controls-panel">
-        <div class="panel-heading">
-          <div>
-            <p class="eyebrow">02 — INTERAGISCI</p>
-            <h2>Livello dei gas serra</h2>
-          </div>
-        </div>
-
-        <div class="level-display">
-          <div>
-            <span class="micro-label">LIVELLO SELEZIONATO</span>
-            <div class="level-number"><span id="levelValue">2</span><small>/ 4</small></div>
-          </div>
-          <span id="levelName" class="level-tag">MEDIO</span>
-        </div>
-
-        <input id="gasSlider" class="range" type="range" min="0" max="4" step="1" value="2" aria-label="Quantità di gas serra">
-        <div class="range-labels"><span>Naturale</span><span>Molto alto</span></div>
-
-        <div class="control-buttons">
-          <button id="decreaseBtn" class="button button-secondary" type="button">− Riduci</button>
-          <button id="increaseBtn" class="button button-primary" type="button">Aumenta +</button>
-        </div>
-
-        <div class="metric-card">
-          <span class="micro-label">CALORE TRATTENUTO NEL MODELLO</span>
-          <div class="metric-value"><span id="heatValue">40</span><small>%</small></div>
-          <div class="meter"><span id="heatBar"></span></div>
-          <p id="heatDescription">Una parte maggiore dell'energia infrarossa viene trattenuta.</p>
-        </div>
-
-        <button id="saveBtn" class="button button-save" type="button">
-          <span>Salva questa simulazione</span><span aria-hidden="true">↗</span>
-        </button>
-        <p id="saveStatus" class="save-status" role="status">Collega Supabase per salvare i risultati.</p>
-      </aside>
-    </section>
-
-    
-<section class="panel feature-panel account-panel" id="accountPanel">
+  <meta cha<section class="panel feature-panel account-panel" id="accountPanel">
   <div class="panel-heading"><div><p class="eyebrow">AREA PERSONALE</p><h2>Il tuo profilo Greenhouse</h2><p class="account-intro">Crea un'identità Greenhouse e conserva le tue simulazioni.</p></div><span id="accountStatus" class="section-note">Ospite</span></div>
   <div class="account-layout">
-    <div class="account-card" id="authForm">
-      <div class="account-card-head"><span class="account-icon">GL</span><div><h3>Crea il tuo account</h3><p>Username breve e password generata automaticamente.</p></div></div>
-      <label for="authEmail">Indirizzo email</label>
-      <input id="authEmail" type="email" autocomplete="email" placeholder="nome@email.com">
-      <div class="account-actions"><button id="registerBtn" class="button button-primary">Crea account</button><button id="loginBtn" class="button button-secondary">Accedi</button></div>
-      <label for="loginPassword" class="login-label">Password (solo per accedere a un account esistente)</label>
-      <div class="password-input-row"><input id="loginPassword" type="password" autocomplete="current-password" placeholder="La tua password"><button id="toggleLoginPassword" class="button button-secondary button-small" type="button">Mostra</button></div>
+    <div class="account-card auth-form" id="authForm">
+      <div class="account-card-head"><span class="account-icon">GL</span><div><h3>Crea utente o accedi</h3><p>Non serve un indirizzo email.</p></div></div>
+      <label for="authUsername">NOME UTENTE</label>
+      <input id="authUsername" type="text" minlength="3" maxlength="24" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="es. EcoRider24">
+      <label for="authPassword">PASSWORD</label>
+      <div class="password-input-row"><input id="authPassword" type="password" minlength="10" maxlength="72" autocomplete="new-password" placeholder="Almeno 10 caratteri"><button id="toggleAuthPassword" class="button button-secondary button-small" type="button">Mostra</button></div>
+      <div class="account-actions"><button id="registerBtn" class="button button-primary" type="button">Crea utente</button><button id="loginBtn" class="button button-secondary" type="button">Accedi</button></div>
       <p id="authMessage" class="auth-message" role="status" aria-live="polite"></p>
+      <p class="science-note">Senza email non è disponibile il recupero automatico della password. Conservala in un posto sicuro.</p>
     </div>
-    <div id="credentialsBox" class="credentials-box" hidden>
-      <div class="credentials-heading"><span class="credentials-check">✓</span><div><h3>Account creato</h3><p>Salva subito queste credenziali: la password viene mostrata solo ora.</p></div></div>
-      <label>USERNAME</label><div class="copy-row"><code id="generatedUsername"></code><button class="button button-secondary button-small" data-copy="generatedUsername">Copia</button></div>
-      <label>PASSWORD</label><div class="copy-row"><code id="generatedPassword"></code><button class="button button-secondary button-small" data-copy="generatedPassword">Copia</button></div>
-      <p class="science-note">La password viene inviata a Supabase Auth, che la protegge con hashing sicuro. Non viene salvata nelle tabelle del sito. Non condividerla.</p>
-    </div>
-    <div id="signedInPanel" class="signed-in-card" hidden><span class="credentials-check">✓</span><div><h3>Sei dentro</h3><p>Profilo attivo: <strong id="signedInName"></strong></p></div></div>
+    <div id="credentialsBox" class="credentials-box auth-info"><h3>Come funziona</h3><p><strong>1.</strong> Scegli un nome utente unico.</p><p><strong>2.</strong> Crea una password di almeno 10 caratteri.</p><p><strong>3.</strong> Premi “Crea utente”. In seguito userai “Accedi”.</p><p class="science-note">La password viene gestita da Supabase Auth e non viene salvata in chiaro nelle tabelle del sito.</p></div>
+    <div id="signedInPanel" class="signed-in-card" hidden><span class="credentials-check">✓</span><div><h3>Accesso effettuato</h3><p>Profilo attivo: <strong id="signedInName"></strong></p></div></div>
   </div>
 </section>
 
-<section class="panel feature-panel" id="advancedControls">
-  <div class="section-heading"><div><p class="eyebrow">SIMULAZIONE AVANZATA</p><h2>Gas, storia e scenari</h2></div><span class="section-note">1850–2100 · storia e scenari</span></div>
-  <div class="advanced-grid">
-    <div class="control-block"><label for="yearSlider">Anno storico: <strong id="yearLabel">2026</strong></label><input id="yearSlider" class="range" type="range" min="1850" max="2100" value="2026"><div class="range-labels"><span>1850</span><span>2026</span></div></div>
-    <div class="control-block"><label for="methaneSlider">Metano CH₄: <strong id="methaneLabel">1.940 ppb</strong></label><input id="methaneSlider" class="range" type="range" min="700" max="3000" step="10" value="1940"></div>
-    <div class="control-block"><label for="vaporSlider">Vapore acqueo: <strong id="vaporLabel">1,0×</strong></label><input id="vaporSlider" class="range" type="range" min="5" max="20" value="10"><p class="field-note">Fattore illustrativo della retroazione, non una concentrazione globale regolabile indipendentemente.</p></div>
-  </div>
-  <div class="scenario-grid"><button class="scenario-button active" data-scenario="baseline">Scenario attuale</button><button class="scenario-button" data-scenario="renewables">100% rinnovabili</button><button class="scenario-button" data-scenario="reforestation">Riforestazione estesa</button><button class="scenario-button" data-scenario="netzero2050">Emissioni nette zero 2050</button></div>
-  <p id="scenarioText" class="field-note">Scenario di riferimento: andamento storico ricostruito e proiezione didattica semplificata.</p>
-  <div class="advanced-metrics"><article><span class="micro-label">CO₂ STIMATA</span><strong id="advancedCo2">428 ppm</strong></article><article><span class="micro-label">CH₄</span><strong id="advancedMethane">1.940 ppb</strong></article><article><span class="micro-label">ANOMALIA TERMICA</span><strong id="advancedTemp">+1,4 °C</strong></article><article><span class="micro-label">FORZANTE RELATIVA</span><strong id="forcingValue">—</strong></article></div>
-  <div class="chart-wrap"><h3>Andamento storico ricostruito</h3><canvas id="historyChart" height="210" aria-label="Grafico storico di CO2 e temperatura"></canvas><p class="field-note">Serie annuali interpolate da punti di riferimento pubblicati; 2026 è una stima didattica; dopo il 2026 sono proiezioni illustrative, non previsioni ufficiali. Non sostituisce dataset scientifici ufficiali.</p></div>
-</section>
+
 
 <section class="panel feature-panel">
   <div class="section-heading"><div><p class="eyebrow">ESPERIMENTO VISIVO</p><h2>Radiazione e particelle</h2></div><span class="section-note">MODELLO CONCETTUALE</span></div>
@@ -236,7 +94,7 @@
       <div class="section-heading">
         <div>
           <p class="eyebrow">03 — DATI</p>
-          <h2>Dashboard delle simulazioni</h2>
+          <h2>Dashboard delle tue simulazioni</h2>
         </div>
         <button id="refreshBtn" class="button button-secondary button-small" type="button">Aggiorna dati ↻</button>
       </div>
@@ -245,7 +103,7 @@
         <article class="stat-card">
           <span class="micro-label">SIMULAZIONI SALVATE</span>
           <strong id="totalCount">—</strong>
-          <span class="stat-foot">Totale nel database</span>
+          <span class="stat-foot">Totale del tuo profilo</span>
         </article>
         <article class="stat-card">
           <span class="micro-label">LIVELLO MEDIO</span>
@@ -281,7 +139,7 @@
           </div>
         </article>
       </div>
-      <p id="dashboardStatus" class="dashboard-status" role="status">Dashboard in attesa della configurazione Supabase.</p>
+      <p id="dashboardStatus" class="dashboard-status" role="status">Accedi per caricare le statistiche personali.</p>
     </section>
 
     <footer>
