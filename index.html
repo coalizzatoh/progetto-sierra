@@ -141,16 +141,16 @@
 </section>
 
 <section class="panel feature-panel" id="advancedControls">
-  <div class="section-heading"><div><p class="eyebrow">SIMULAZIONE AVANZATA</p><h2>Gas, storia e scenari</h2></div><span class="section-note">1850–2026 · valori ricostruiti</span></div>
+  <div class="section-heading"><div><p class="eyebrow">SIMULAZIONE AVANZATA</p><h2>Gas, storia e scenari</h2></div><span class="section-note">1850–2100 · storia e scenari</span></div>
   <div class="advanced-grid">
-    <div class="control-block"><label for="yearSlider">Anno storico: <strong id="yearLabel">2026</strong></label><input id="yearSlider" class="range" type="range" min="1850" max="2026" value="2026"><div class="range-labels"><span>1850</span><span>2026</span></div></div>
+    <div class="control-block"><label for="yearSlider">Anno storico: <strong id="yearLabel">2026</strong></label><input id="yearSlider" class="range" type="range" min="1850" max="2100" value="2026"><div class="range-labels"><span>1850</span><span>2026</span></div></div>
     <div class="control-block"><label for="methaneSlider">Metano CH₄: <strong id="methaneLabel">1.940 ppb</strong></label><input id="methaneSlider" class="range" type="range" min="700" max="3000" step="10" value="1940"></div>
     <div class="control-block"><label for="vaporSlider">Vapore acqueo: <strong id="vaporLabel">1,0×</strong></label><input id="vaporSlider" class="range" type="range" min="5" max="20" value="10"><p class="field-note">Fattore illustrativo della retroazione, non una concentrazione globale regolabile indipendentemente.</p></div>
   </div>
   <div class="scenario-grid"><button class="scenario-button active" data-scenario="baseline">Scenario attuale</button><button class="scenario-button" data-scenario="renewables">100% rinnovabili</button><button class="scenario-button" data-scenario="reforestation">Riforestazione estesa</button><button class="scenario-button" data-scenario="netzero2050">Emissioni nette zero 2050</button></div>
   <p id="scenarioText" class="field-note">Scenario di riferimento: andamento storico ricostruito e proiezione didattica semplificata.</p>
   <div class="advanced-metrics"><article><span class="micro-label">CO₂ STIMATA</span><strong id="advancedCo2">428 ppm</strong></article><article><span class="micro-label">CH₄</span><strong id="advancedMethane">1.940 ppb</strong></article><article><span class="micro-label">ANOMALIA TERMICA</span><strong id="advancedTemp">+1,4 °C</strong></article><article><span class="micro-label">FORZANTE RELATIVA</span><strong id="forcingValue">—</strong></article></div>
-  <div class="chart-wrap"><h3>Andamento storico ricostruito</h3><canvas id="historyChart" height="210" aria-label="Grafico storico di CO2 e temperatura"></canvas><p class="field-note">Serie annuali interpolate da punti di riferimento pubblicati; 2026 è una stima didattica, non un dato osservato definitivo. Non sostituisce dataset scientifici ufficiali.</p></div>
+  <div class="chart-wrap"><h3>Andamento storico ricostruito</h3><canvas id="historyChart" height="210" aria-label="Grafico storico di CO2 e temperatura"></canvas><p class="field-note">Serie annuali interpolate da punti di riferimento pubblicati; 2026 è una stima didattica; dopo il 2026 sono proiezioni illustrative, non previsioni ufficiali. Non sostituisce dataset scientifici ufficiali.</p></div>
 </section>
 
 <section class="panel feature-panel">
