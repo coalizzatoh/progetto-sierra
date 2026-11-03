@@ -171,3 +171,29 @@ footer { display: flex; justify-content: space-between; gap: 15px; border-top: 1
 /* Account area refresh */
 .account-panel{overflow:hidden}.account-intro{margin:7px 0 0;color:var(--muted);font-size:13px}.account-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;margin-top:22px;align-items:start}.account-card,.credentials-box,.signed-in-card{min-width:0;background:linear-gradient(145deg,#101d30,#0b1422);border:1px solid #263b55;border-radius:15px;padding:22px}.account-card-head,.credentials-heading{display:flex;align-items:center;gap:13px;margin-bottom:18px}.account-card-head h3,.credentials-heading h3{margin:0 0 4px}.account-card-head p,.credentials-heading p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}.account-icon{width:42px;height:42px;display:grid;place-items:center;border-radius:12px;background:#17365a;color:#93c5fd;font-weight:800;letter-spacing:1px}.account-card>label,.credentials-box>label{display:block;margin:14px 0 7px;color:#aabbd0;font-size:10px;letter-spacing:1.2px;font-weight:700}.account-card input{width:100%;box-sizing:border-box;background:#080f1b;color:var(--text);border:1px solid #30445d;border-radius:9px;padding:13px 14px;font:14px Manrope,Arial;outline:none}.account-card input:focus{border-color:#60a5fa;box-shadow:0 0 0 3px #3b82f622}.account-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.account-actions .button{flex:1}.login-label{margin-top:22px!important}.password-input-row{display:flex;gap:8px}.password-input-row input{flex:1;min-width:0}.auth-message{min-height:20px;margin:13px 0 0;color:#9fb0c5;font-size:12px;line-height:1.5}.auth-message[data-state=error]{color:#fca5a5}.auth-message[data-state=success]{color:#86efac}.credentials-box{border-color:#27634c;background:linear-gradient(145deg,#10291f,#0b1720)}.credentials-check{width:30px;height:30px;flex:none;display:grid;place-items:center;border-radius:50%;background:#164b36;color:#86efac;font-weight:800}.credentials-box .copy-row{background:#080f1b;border:1px solid #263b55;border-radius:9px;padding:10px 10px 10px 13px}.credentials-box .copy-row code{font-size:14px;letter-spacing:.5px}.credentials-box .science-note{margin-top:16px}.signed-in-card{grid-column:1/-1;display:flex;align-items:center;gap:13px}.signed-in-card div{flex:1}.signed-in-card h3,.signed-in-card p{margin:0}.signed-in-card p{margin-top:5px;color:var(--muted);font-size:13px}
 @media(max-width:760px){.account-layout{grid-template-columns:1fr}.account-card,.credentials-box{padding:17px}.signed-in-card{grid-column:auto;flex-wrap:wrap}}
+
+
+/* Username authentication, charts and dashboard fixes */
+.auth-form input{display:block;width:100%;min-height:46px;padding:12px 14px;border:1px solid var(--line);border-radius:9px;background:#080f1b;color:var(--text);font:14px Manrope,Arial,sans-serif}
+.auth-form input:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--cyan);outline-offset:2px}
+.auth-info p{color:#cbd5e1;font-size:12px;line-height:1.65}
+.auth-message{min-height:20px;margin:13px 0 0;color:#9fb0c5;font-size:12px;line-height:1.5}
+.auth-message[data-state=error]{color:#fca5a5}
+.chart-legend{display:flex;flex-wrap:wrap;gap:16px;margin:10px 0;color:var(--muted);font-size:11px}
+.chart-legend span{display:flex;align-items:center;gap:7px}
+.chart-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.legend-co2{background:#60a5fa}.legend-temp{background:#fb923c}
+.bar-chart{display:grid;gap:11px;padding:14px 0}
+.bar-row{display:grid;grid-template-columns:75px 1fr 24px;align-items:center;gap:10px;color:#cbd5e1;font-size:11px}
+.bar-track{height:9px;background:#1c2a3e;border-radius:99px;overflow:hidden}
+.bar-track i{display:block;height:100%;border-radius:99px;background:linear-gradient(90deg,#3b82f6,#38bdf8)}
+.bar-row strong{text-align:right;font:11px 'DM Mono',monospace}
+.quiz-question{min-width:0;border:1px solid var(--line)}
+.quiz-question legend{padding:0 5px;color:#eef4ff;font-size:13px;font-weight:700}
+.quiz-question label{display:flex;align-items:center;gap:8px}
+.quiz-question input{accent-color:#60a5fa}
+.table-wrap{overflow-x:auto}
+.leaderboard li{display:flex;justify-content:space-between;gap:10px}
+.leaderboard strong{color:#93c5fd;font:11px 'DM Mono',monospace}
+@media(max-width:760px){.account-layout{grid-template-columns:1fr}.account-card,.credentials-box{padding:17px}.signed-in-card{grid-column:auto;flex-wrap:wrap}}
+@media(max-width:520px){.auth-grid,.account-layout{grid-template-columns:1fr}.account-actions{flex-direction:column}.password-input-row{align-items:stretch}.password-input-row .button{flex:none}.chart-legend{gap:10px}}
