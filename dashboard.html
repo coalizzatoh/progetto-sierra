@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#080d18">
+  <meta name="description" content="Statistiche aggregate del simulatore didattico dell'effetto serra.">
+  <title>Dashboard — Greenhouse Lab</title>
+  <link rel="stylesheet" href="assets/dashboard.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="assets/config.js"></script>
+  <script src="assets/dashboard.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="index.html"><span class="brand-mark">G</span><span>GREENHOUSE <span class="muted">LAB</span></span></a>
+    <nav><a href="index.html">Simulatore</a><button id="refreshBtn" class="button secondary" type="button">Aggiorna ↻</button></nav>
+  </header>
+  <main class="page">
+    <section class="hero">
+      <p class="eyebrow">DATI DEL SIMULATORE</p>
+      <h1>Dashboard <span>climatica.</span></h1>
+      <p>Una panoramica delle simulazioni salvate, dei livelli di gas serra e del calore trattenuto nel modello didattico.</p>
+      <p id="status" class="status" role="status" aria-live="polite">Connessione a Supabase…</p>
+    </section>
+
+    <section class="stats" aria-label="Statistiche principali">
+      <article class="card stat"><span class="label">SIMULAZIONI TOTALI</span><strong id="total">—</strong><small>Registrate nel database</small></article>
+      <article class="card stat"><span class="label">CALORE TRATTENUTO MEDIO</span><strong id="averageHeat">—</strong><small>Indicatore didattico (%)</small></article>
+      <article class="card stat"><span class="label">CALORE TRATTENUTO MASSIMO</span><strong id="maxHeat">—</strong><small>Valore più alto registrato (%)</small></article>
+      <article class="card stat"><span class="label">LIVELLO MEDIO</span><strong id="averageLevel">—</strong><small>Scala da 0 a 4</small></article>
+    </section>
+
+    <section class="grid">
+      <article class="card">
+        <div class="section-head"><div><p class="eyebrow">DISTRIBUZIONE</p><h2>Livelli di gas serra</h2></div><span class="hint">0–4</span></div>
+        <p class="description">Numero di simulazioni salvate per ciascun livello selezionato.</p>
+        <div id="levelChart" class="bars" aria-label="Distribuzione delle simulazioni per livello"><p class="empty">In attesa dei dati…</p></div>
+      </article>
+      <article class="card recent">
+        <div class="section-head"><div><p class="eyebrow">ATTIVITÀ RECENTE</p><h2>Ultime simulazioni</h2></div></div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Livello</th><th>Calore</th><th>Anno</th><th>Scenario</th><th>Data</th></tr></thead>
+            <tbody id="recentRows"><tr><td colspan="5" class="empty">Caricamento…</td></tr></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+    <p class="footnote">Nota: “calore trattenuto” e livelli sono indicatori del simulatore, non misure scientifiche dirette dell'energia atmosferica. Le statistiche vengono aggiornate quando apri la pagina o premi Aggiorna.</p>
+    <footer><span>GREENHOUSE LAB</span><span>HTML · CSS · JavaScript · Supabase</span></footer>
+  </main>
+</body>
+</html>
