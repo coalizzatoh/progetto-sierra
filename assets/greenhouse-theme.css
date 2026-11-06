@@ -1,0 +1,29 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;700;800&display=swap');
+:root{color-scheme:dark;--bg:#000;--panel:#0a0a0a;--panel-2:#111;--line:#202020;--muted:#777;--text:#f0f0f0;--blue:#aaff00;--cyan:#aaff00;--orange:#aaff00}
+html{scroll-behavior:smooth}body{background:#000!important;color:#f0f0f0!important;font-family:Manrope,Arial,sans-serif!important}
+.topbar{background:rgba(0,0,0,.94)!important;border-bottom:1px solid #202020!important;backdrop-filter:blur(12px);position:sticky;top:0;z-index:50}
+.brand{color:#f0f0f0!important;letter-spacing:.08em}.brand-mark{border:1px solid #aaff00!important;border-radius:0!important;color:#aaff00!important;background:transparent!important}.brand-muted,.muted{color:#777!important}
+.top-status,.eyebrow,.micro-label,.label{font-family:'DM Mono',monospace!important;letter-spacing:.12em!important}.eyebrow{color:#aaff00!important}
+.status-dot,.pulse{background:#aaff00!important;box-shadow:0 0 10px #aaff0080!important}
+.page,.wrap{max-width:1240px}.hero h1,h1{letter-spacing:-.055em!important}.hero h1 span,h1 span{color:#aaff00!important}
+.hero-chip,.panel,.stat-card,.card,.feature-panel,.account-card,.credentials-box,.signed-in-card,.metric-card,.info-card,.control-block,.advanced-metrics article,.glossary-grid details{border-radius:0!important;box-shadow:none!important}
+.panel,.card,.stat-card,.feature-panel{background:#0a0a0a!important;border:1px solid #202020!important}
+.button,.scenario-button,.top-actions button,.account-card input,.feedback-row input,.feedback-row select,.credentials-box,.metric-card,.explanation,.control-block{border-radius:0!important}
+.button-primary,.button-save{background:#aaff00!important;color:#000!important;border-color:#aaff00!important}
+.button-secondary,.scenario-button{background:#080808!important;color:#d9d9d9!important;border:1px solid #303030!important}
+.button-secondary:hover,.scenario-button:hover,.scenario-button.active{border-color:#aaff00!important;color:#aaff00!important}
+.range{accent-color:#aaff00!important}.meter span,.bar-fill{background:#aaff00!important}
+.scene,.chart-wrap canvas,.radiation-canvas,.chart-panel,.recent-panel{border-radius:0!important;background-color:#050505!important}
+.scene{background:radial-gradient(ellipse at 53% 48%,#17200c 0%,#080a06 55%,#030303 100%)!important}
+.earth{box-shadow:inset -19px -12px 28px #020617a8,0 0 28px #aaff0040!important}.atmosphere{border-color:#aaff0088!important;box-shadow:0 0 18px #aaff0040,inset 0 0 18px #aaff0018!important}
+.explanation{background:#101010!important;border:1px solid #242424}.explanation-icon{border-color:#aaff00!important;color:#aaff00!important}
+.level-tag,.section-note,.user-badge,.count{border-radius:0!important;color:#aaff00!important;border-color:#405018!important;background:#101505!important}
+td{border-color:#202020!important}th{color:#777!important}footer{border-color:#202020!important}
+.info-card,.fact-strip,.climate-metric{background:#0a0a0a!important;border-color:#202020!important}.info-icon{border-radius:0!important;border-color:#526b1c!important;color:#aaff00!important;background:#111!important}
+.tag-row span{border-radius:0!important;color:#c7e98c!important;border-color:#303a1d!important}
+.glossary-grid summary{color:#aaff00!important}
+.account-card input:focus,.ip-form input:focus{border-color:#aaff00!important;box-shadow:0 0 0 2px #aaff0020!important}
+a{color:#aaff00}a:hover{color:#d4ff7b}
+[data-reveal]{opacity:0;transform:translateY(18px);transition:opacity .55s ease,transform .55s cubic-bezier(.22,1,.36,1)}[data-reveal].is-visible{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}[data-reveal]{opacity:1;transform:none}}
+@media(max-width:760px){.topbar{height:auto;min-height:64px;gap:12px;flex-wrap:wrap;padding:12px 4vw!important}.top-actions{gap:7px!important}.hero{padding-top:36px}.feature-panel{padding:16px!important}}
