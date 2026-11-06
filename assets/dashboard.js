@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded",function(){
    const {data,error}=await db.from("simulation_runs").select("id,user_id,level,year,co2_ppm,retained_heat,scenario,created_at").eq("user_id",currentUser.id).order("created_at",{ascending:false}).limit(500);
    if(error)throw error;
    render(data||[]);
-  }catch(error){status("Impossibile caricare i dati: "+(error.message||"errore sconosciuto"),true);empty("Controlla la connessione e riprova.");}
+  }catch(error){lastRows=[];$("exportBtn").disabled=true;status("Impossibile caricare i dati: "+(error.message||"errore sconosciuto"),true);empty("Controlla la connessione e riprova.");}
   finally{loading=false;}
  }
  function exportCsv(){
