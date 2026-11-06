@@ -34,3 +34,13 @@ a{color:#aaff00}a:hover{color:#d4ff7b}
 .main-nav a:before{content:"▸";color:#aaff00;margin-right:7px;opacity:0;transition:opacity .2s}
 .main-nav a:hover:before,.main-nav a:focus-visible:before{opacity:1}
 @media(max-width:760px){.main-nav{order:3;width:100%;margin:4px 0 0;justify-content:flex-start;gap:18px;overflow:auto;padding:4px 0}.main-nav a{white-space:nowrap;font-size:9px}}
+
+/* Terra explorer refinements */
+.top{background:#000!important;border-color:#202020!important}
+.back,.year,.timeline-head strong{color:#aaff00!important}
+.visual:before{background:radial-gradient(ellipse,#aaff0015,transparent 68%)!important}
+.metric{border-color:#202020!important}.metric span{color:#777!important}.metric strong{color:#f0f0f0!important}
+.controls button{background:#080808!important;border:1px solid #303030!important;border-radius:0!important;color:#ddd!important}
+.controls button:hover{border-color:#aaff00!important;color:#aaff00!important}
+.note{border-color:#202020!important;color:#777!important}.note strong{color:#ccc!important}
+.tick.active{background:#aaff00!important;box-shadow:0 0 12px #aaff0080!important}
