@@ -4,12 +4,12 @@
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#080d18"><meta name="robots" content="noindex,nofollow">
   <title>Admin Console — Greenhouse Lab</title>
-  <link rel="stylesheet" href="assets/admin.css?v=2">
+  <link rel="stylesheet" href="assets/admin.css?v=2">\n  <link rel="stylesheet" href="assets/greenhouse-theme.css?v=1">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/config.js"></script><script src="assets/admin.js?v=2" defer></script>
 </head>
 <body>
-<header class="topbar"><a class="brand" href="./">GREENHOUSE <span>LAB</span></a><div class="top-actions"><span class="live"><i></i> LIVE · 5 SEC</span><button id="refresh" class="ghost">Aggiorna ora</button><button id="logout" class="ghost">Esci</button></div></header>
+<header class="topbar"><a class="brand" href="./">GREENHOUSE <span>LAB</span></a><nav style="display:flex;gap:18px;margin-left:auto;margin-right:22px"><a href="index.html">SIMULATORE</a><a href="terra.html">TERRA</a><a href="dashboard.html">DASHBOARD</a></nav><div class="top-actions"><span class="live"><i></i> LIVE · 5 SEC</span><button id="refresh" class="ghost">Aggiorna ora</button><button id="logout" class="ghost">Esci</button></div></header>
 <main class="wrap">
 <section class="intro"><div><p class="eyebrow">CONTROL ROOM / RESTRICTED</p><h1>Admin Console</h1><p class="muted">Benvenuto, <strong id="admin-name">Admin</strong>. Gestione Greenhouse Lab.</p></div><div class="sync"><span class="pulse"></span><div><strong id="sync-state">Connessione in corso</strong><small id="last-update">In attesa dei dati…</small></div></div></section>
 <div id="error" class="error" hidden></div><div id="notice" class="notice" hidden></div>
