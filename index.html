@@ -6,7 +6,8 @@
   <meta name="theme-color" content="#080d18">
   <meta name="description" content="Simulatore didattico interattivo dell'effetto serra.">
   <title>Greenhouse Lab — Simulatore effetto serra</title>
-  <link rel="stylesheet" href="assets/style.css?v=20261103-username-v6">\n  <link rel="stylesheet" href="assets/greenhouse-theme.css?v=1">
+  <link rel="stylesheet" href="assets/style.css?v=20261103-username-v6">
+  <link rel="stylesheet" href="assets/greenhouse-theme.css?v=2">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="assets/config.js"></script>
   <script src="assets/app.js?v=20261103-username-v9" defer></script>
@@ -17,7 +18,8 @@
       <span class="brand-mark">G</span>
       <span>GREENHOUSE<span class="brand-muted"> LAB</span></span>
     </a>
-    <nav class="main-nav" aria-label="Navigazione principale"><a href="index.html">Simulatore</a><a href="terra.html">Terra</a><a href="dashboard.html">Dashboard</a></nav>\n    <div class="top-actions"><span class="top-status"><span class="status-dot"></span> SIMULAZIONE DIDATTICA</span><button id="authOpen" class="button button-secondary button-small">Accedi / Registrati</button><span id="userBadge" class="user-badge" hidden></span><button id="logoutBtn" class="button button-secondary button-small" hidden>Esci</button></div>
+    <nav class="main-nav" aria-label="Navigazione principale"><a href="index.html">Simulatore</a><a href="terra.html">Terra</a><a href="dashboard.html">Dashboard</a></nav>
+    <div class="top-actions"><span class="top-status"><span class="status-dot"></span> SIMULAZIONE DIDATTICA</span><button id="authOpen" class="button button-secondary button-small">Accedi / Registrati</button><span id="userBadge" class="user-badge" hidden></span><button id="logoutBtn" class="button button-secondary button-small" hidden>Esci</button></div>
   </header>
 
   <main class="page">
@@ -186,7 +188,8 @@
  <div class="control-buttons"><button id="reportBtn" class="button button-primary">Esporta mini-report (PDF)</button><button id="imageReportBtn" class="button button-secondary">Esporta riepilogo immagine</button></div>
  <p id="feedbackStatus" class="save-status" role="status"></p>
 </section>
-\n<section class="learning-section">
+
+<section class="learning-section">
       <div class="section-heading">
         <div>
           <p class="eyebrow">APPROFONDIMENTO</p>
@@ -290,5 +293,6 @@
       <span>Progetto didattico · HTML, CSS, JavaScript e Supabase</span>
     </footer>
   </main>
-<script>document.querySelectorAll(".panel,.hero,.info-card").forEach((el,i)=>{el.setAttribute("data-reveal","");el.style.transitionDelay=Math.min(i%8,7)*45+"ms"});const reveal=new IntersectionObserver(items=>items.forEach(item=>{if(item.isIntersecting){item.target.classList.add("is-visible");reveal.unobserve(item.target)}}),{threshold:.08});document.querySelectorAll("[data-reveal]").forEach(el=>reveal.observe(el));</script>\n</body>
+<script>document.querySelectorAll(".panel,.hero,.info-card").forEach((el,i)=>{el.setAttribute("data-reveal","");el.style.transitionDelay=Math.min(i%8,7)*45+"ms"});const reveal=new IntersectionObserver(items=>items.forEach(item=>{if(item.isIntersecting){item.target.classList.add("is-visible");reveal.unobserve(item.target)}}),{threshold:.08});document.querySelectorAll("[data-reveal]").forEach(el=>reveal.observe(el));</script>
+</body>
 </html>
